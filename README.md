@@ -1,36 +1,42 @@
 # The Sewöster Archive V2
 
-Interactive relationship mystery / escape-room game for **Fallakte 2407**.
+Interaktives Beziehungs-Mystery- und Escape-Room-Spiel für die **Fallakte 2407**.
 
-## Current status
+## Aktueller Stand
 
-The technical foundation is live:
+Die technische Grundlage ist einsatzbereit:
 
-- vintage archive interface
-- sequential puzzle engine
-- automatic local progress
-- wrong-attempt counter
-- multi-level hint tracking
-- image/evidence support
-- SHA-256 based answer validation
-- mobile-friendly layout
+- Archivoberfläche im Vintage-Stil
+- Aufgaben werden nacheinander freigeschaltet
+- Fortschritt wird lokal automatisch gespeichert
+- Fehlversuche werden gezählt
+- mehrstufiges Hinweissystem
+- Unterstützung für Bilder und Beweisstücke
+- Antwortprüfung über SHA-256-Prüfsummen
+- für Mobilgeräte optimiertes Layout
 
-No real puzzle has been released yet. The next development step is **Aufgabe 1**.
+Noch wurde keine echte Aufgabe freigegeben. Der nächste Entwicklungsschritt ist **Aufgabe 1**.
 
-## Structure
+## Projektstruktur
 
-- `index.html` — application shell
-- `css/style.css` — archive visual system
-- `data/puzzles.js` — puzzle registry
-- `js/progress.js` — local progress state
-- `js/app.js` — puzzle engine
-- `assets/evidence/` — puzzle boards and evidence graphics
-- `assets/images/` — general images
-- `assets/audio/` — audio clues
-- `assets/documents/` — document clues
+- `index.html` — Grundgerüst der Anwendung
+- `css/style.css` — visuelles Archivsystem
+- `data/puzzles.js` — Aufgabenregister
+- `js/progress.js` — lokaler Spielstand
+- `js/app.js` — Aufgaben- und Antwortlogik
+- `assets/evidence/` — Beweisbilder und Rätselgrafiken
+- `assets/images/` — allgemeine Bilder
+- `assets/audio/` — Audiohinweise
+- `assets/documents/` — Dokumente und Akten
 
-## Case
+## Fallakte
 
 **THE SEWÖSTER ARCHIVE**  
 **Fallakte: 2407**  
 **Status: Aktiv**
+
+## Sprachregel
+
+Alle Inhalte, die im Spiel sichtbar oder hörbar sind, werden auf **Deutsch** erstellt. Dazu gehören Aufgaben, Hinweise, Fehlermeldungen, Dokumente, Beweisstücke, Bildtexte, Audioinhalte und Abschlussseiten.
+
+Der Markenname **THE SEWÖSTER ARCHIVE** bleibt unverändert.
