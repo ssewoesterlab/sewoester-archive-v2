@@ -1,9 +1,9 @@
 /*
  * THE SEWÖSTER ARCHIVE — Aufgabenregister
  *
- * Gerçek görevleri buraya sırayla ekleyeceğiz.
- * Cevapları düz metin olarak tutmak yerine SHA-256-Prüfsummen kullanacağız.
- * Böylece GitHub Pages kaynak koduna bakan biri cevabı doğrudan göremez.
+ * Echte Aufgaben werden hier der Reihe nach ergänzt.
+ * Antworten werden nicht im Klartext gespeichert, sondern als SHA-256-Prüfsummen.
+ * Dadurch sind Lösungen im GitHub-Pages-Quelltext nicht unmittelbar sichtbar.
  */
 
 window.SEWOESTER_PUZZLES = [];
