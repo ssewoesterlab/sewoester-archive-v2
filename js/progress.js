@@ -2,12 +2,12 @@
   const STORAGE_KEY = "sewoesterArchiveV2Progress";
 
   const defaults = {
+    accessGranted: false,
     currentIndex: 0,
     solvedIds: [],
     wrongAttempts: 0,
     hintsUsed: 0,
-    hintLevels: {},
-    started: false
+    hintLevels: {}
   };
 
   function load() {
