@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#17120d">
+  <title>THE SEWÖSTER ARCHIVE — Fallakte 2407</title>
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+  <div class="page-noise" aria-hidden="true"></div>
+
+  <main class="archive-shell">
+    <header class="archive-header">
+      <div class="seal" aria-hidden="true">
+        <span class="seal-inner">S</span>
+      </div>
+
+      <div>
+        <p class="eyebrow">Vertrauliches Privatarchiv</p>
+        <h1>THE SEWÖSTER ARCHIVE</h1>
+        <div class="case-line">
+          <span>FALLAKTE: <strong>2407</strong></span>
+          <span class="status-dot">STATUS: AKTIV</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="intro-card" id="welcomeView">
+      <p class="stamp">ARCHIVZUGANG</p>
+      <h2>Fallakte 2407 wurde reaktiviert.</h2>
+      <p>
+        Erinnerungen wurden fragmentiert, Beweisstücke verschlüsselt und Zusammenhänge
+        absichtlich verborgen. Nicht jede Information ist dort wichtig, wo du sie findest.
+      </p>
+      <p class="warning">
+        Achte auf Reihenfolgen. Achte auf Details. Achte auf Wiederholungen.
+      </p>
+
+      <button class="primary-button" id="startButton" type="button">
+        Archiv öffnen
+      </button>
+
+      <p class="save-note">Fortschritt wird auf diesem Gerät automatisch gespeichert.</p>
+    </section>
+
+    <section class="case-dashboard" aria-label="Archivstatus">
+      <div>
+        <span class="meta-label">Wiederhergestellt</span>
+        <strong id="solvedCount">0</strong>
+      </div>
+      <div>
+        <span class="meta-label">Gesamtakten</span>
+        <strong id="totalCount">0</strong>
+      </div>
+      <div>
+        <span class="meta-label">Fehlversuche</span>
+        <strong id="attemptCount">0</strong>
+      </div>
+      <div>
+        <span class="meta-label">Hinweise benutzt</span>
+        <strong id="hintCount">0</strong>
+      </div>
+    </section>
+
+    <section class="puzzle-card is-hidden" id="puzzleView">
+      <div class="puzzle-topline">
+        <span id="puzzleNumber">AUFGABE 01</span>
+        <span id="puzzleDifficulty">KLASSIFIZIERT</span>
+      </div>
+
+      <h2 id="puzzleTitle"></h2>
+      <p class="puzzle-subtitle" id="puzzleSubtitle"></p>
+
+      <div class="evidence-slot is-hidden" id="evidenceSlot"></div>
+      <div class="puzzle-body" id="puzzleBody"></div>
+
+      <form id="answerForm" autocomplete="off">
+        <label for="answerInput" id="answerLabel">Archivschlüssel</label>
+        <div class="answer-row">
+          <input
+            id="answerInput"
+            name="answer"
+            type="text"
+            spellcheck="false"
+            autocomplete="off"
+            placeholder="Antwort eingeben..."
+          >
+          <button class="primary-button" type="submit">Prüfen</button>
+        </div>
+      </form>
+
+      <div class="feedback" id="feedback" aria-live="polite"></div>
+
+      <div class="hint-panel">
+        <button class="secondary-button" id="hintButton" type="button">
+          Hinweis anfordern
+        </button>
+        <p id="hintText"></p>
+      </div>
+    </section>
+
+    <section class="empty-state is-hidden" id="emptyView">
+      <p class="stamp">SYSTEM BEREIT</p>
+      <h2>Der Archivmotor läuft.</h2>
+      <p>
+        Noch wurde keine Aufgabe in Fallakte 2407 freigegeben.
+        Die technische Basis ist bereit für Aufgabe 1.
+      </p>
+    </section>
+
+    <footer>
+      <span>THE SEWÖSTER ARCHIVE</span>
+      <span>CASE 2407 · V2</span>
+    </footer>
+  </main>
+
+  <script src="./data/puzzles.js"></script>
+  <script src="./js/progress.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>
