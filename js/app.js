@@ -5,10 +5,17 @@
 
   const state = window.SewoesterProgress.load();
 
-  const welcomeView = document.getElementById("welcomeView");
+  const ACCESS_HASH = "2146a029ad5e62ec7869f2a223277021c94d020022b1a2b49afa85f34a1dadf2";
+
+  const accessView = document.getElementById("accessView");
+  const accessForm = document.getElementById("accessForm");
+  const accessInput = document.getElementById("accessInput");
+  const accessFeedback = document.getElementById("accessFeedback");
+  const archiveStatus = document.getElementById("archiveStatus");
+
+  const dashboardView = document.getElementById("dashboardView");
   const puzzleView = document.getElementById("puzzleView");
   const emptyView = document.getElementById("emptyView");
-  const startButton = document.getElementById("startButton");
 
   const solvedCount = document.getElementById("solvedCount");
   const totalCount = document.getElementById("totalCount");
@@ -93,17 +100,26 @@
     evidenceSlot.classList.remove("is-hidden");
   }
 
+  function renderAccess() {
+    accessView.classList.remove("is-hidden");
+    dashboardView.classList.add("is-hidden");
+    puzzleView.classList.add("is-hidden");
+    emptyView.classList.add("is-hidden");
+    archiveStatus.textContent = "STATUS: GESPERRT";
+    accessInput.focus();
+  }
+
   function renderPuzzle() {
     updateDashboard();
 
-    if (!state.started) {
-      welcomeView.classList.remove("is-hidden");
-      puzzleView.classList.add("is-hidden");
-      emptyView.classList.add("is-hidden");
+    if (!state.accessGranted) {
+      renderAccess();
       return;
     }
 
-    welcomeView.classList.add("is-hidden");
+    accessView.classList.add("is-hidden");
+    dashboardView.classList.remove("is-hidden");
+    archiveStatus.textContent = "STATUS: AKTIV";
 
     if (puzzles.length === 0) {
       puzzleView.classList.add("is-hidden");
@@ -149,10 +165,27 @@
     answerInput.focus();
   }
 
-  startButton.addEventListener("click", function () {
-    state.started = true;
+  accessForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const raw = accessInput.value;
+    if (!raw.trim()) return;
+
+    const hash = await sha256(normalize(raw));
+
+    if (hash !== ACCESS_HASH) {
+      accessFeedback.textContent = "Zugriff verweigert. Antwort nicht akzeptiert.";
+      accessFeedback.className = "feedback error";
+      return;
+    }
+
+    state.accessGranted = true;
     persist();
-    renderPuzzle();
+
+    accessFeedback.textContent = "Identität bestätigt. Zugriff gewährt.";
+    accessFeedback.className = "feedback success";
+
+    setTimeout(renderPuzzle, 900);
   });
 
   answerForm.addEventListener("submit", async function (event) {
