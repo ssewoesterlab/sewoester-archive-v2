@@ -21,30 +21,39 @@
         <h1>THE SEWÖSTER ARCHIVE</h1>
         <div class="case-line">
           <span>FALLAKTE: <strong>2407</strong></span>
-          <span class="status-dot">STATUS: AKTIV</span>
+          <span class="status-dot" id="archiveStatus">STATUS: GESPERRT</span>
         </div>
       </div>
     </header>
 
-    <section class="intro-card" id="welcomeView">
-      <p class="stamp">ARCHIVZUGANG</p>
-      <h2>Fallakte 2407 wurde reaktiviert.</h2>
+    <section class="intro-card" id="accessView">
+      <p class="stamp">ZUGRIFFSKONTROLLE</p>
+      <h2>Identitätsprüfung erforderlich.</h2>
       <p>
-        Erinnerungen wurden fragmentiert, Beweisstücke verschlüsselt und Zusammenhänge
-        absichtlich verborgen. Nicht jede Information ist dort wichtig, wo du sie findest.
-      </p>
-      <p class="warning">
-        Achte auf Reihenfolgen. Achte auf Details. Achte auf Wiederholungen.
+        Bevor Fallakte 2407 geöffnet werden kann, muss eine persönliche
+        Sicherheitsfrage korrekt beantwortet werden.
       </p>
 
-      <button class="primary-button" id="startButton" type="button">
-        Archiv öffnen
-      </button>
+      <form id="accessForm" autocomplete="off">
+        <label for="accessInput"><strong>Wer ist dein Lieblingskind?</strong></label>
+        <div class="answer-row">
+          <input
+            id="accessInput"
+            name="access"
+            type="text"
+            spellcheck="false"
+            autocomplete="off"
+            placeholder="Antwort eingeben..."
+          >
+          <button class="primary-button" type="submit">Zugriff prüfen</button>
+        </div>
+      </form>
 
-      <p class="save-note">Fortschritt wird auf diesem Gerät automatisch gespeichert.</p>
+      <div class="feedback" id="accessFeedback" aria-live="polite"></div>
+      <p class="save-note">Nach erfolgreicher Prüfung wird der Zugriff auf diesem Gerät gespeichert.</p>
     </section>
 
-    <section class="case-dashboard" aria-label="Archivstatus">
+    <section class="case-dashboard is-hidden" id="dashboardView" aria-label="Archivstatus">
       <div>
         <span class="meta-label">Wiederhergestellt</span>
         <strong id="solvedCount">0</strong>
@@ -101,10 +110,10 @@
     </section>
 
     <section class="empty-state is-hidden" id="emptyView">
-      <p class="stamp">SYSTEM BEREIT</p>
-      <h2>Der Archivmotor läuft.</h2>
+      <p class="stamp">ZUGRIFF GEWÄHRT</p>
+      <h2>Identität bestätigt.</h2>
       <p>
-        Noch wurde keine Aufgabe in Fallakte 2407 freigegeben.
+        Fallakte 2407 wurde entsperrt.
         Die technische Basis ist bereit für Aufgabe 1.
       </p>
     </section>
