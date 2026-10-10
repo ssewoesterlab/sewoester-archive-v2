@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0a101c">
+  <title>Kablo Operasyonu — Mini Oyun</title>
+  <style>
+    :root { color-scheme: dark; --bg:#0a101c; --panel:#121b2c; --panel2:#172236; --edge:#2a3951; --text:#edf4ff; --sub:#a1b2ca; --good:#3be6af; --danger:#ff6574; --gold:#ffd078; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:radial-gradient(circle at 55% 0%,#1e3351 0,transparent 35%),linear-gradient(135deg,#090f19,#111b2a 65%,#080e18); color:var(--text); }
+    body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;background-image:linear-gradient(#8db4ff12 1px, transparent 1px),linear-gradient(90deg,#8db4ff12 1px,transparent 1px);background-size:36px 36px;}
+    .shell { width:min(1040px,calc(100% - 30px)); margin:0 auto; padding:26px 0 48px; position:relative; }
+    .top { display:flex; justify-content:space-between; gap:18px; align-items:center; margin-bottom:20px; }
+    .brandline { display:flex; align-items:center; gap:10px; text-transform:uppercase; font-size:11px; font-weight:800; letter-spacing:2.5px; color:var(--gold); }
+    .led{height:10px;width:10px;border-radius:100%;background:var(--danger);box-shadow:0 0 18px var(--danger);animation:pulse 1.8s ease-in-out infinite;}
+    .top h1 { margin:8px 0 0; font-size:clamp(24px,4vw,39px); line-height:1.08; letter-spacing:-1.5px; }
+    .top h1 span { color:var(--good); }
+    .top-right{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+    .pill{border:1px solid var(--edge);border-radius:14px;background:#18243a;padding:10px 13px;min-width:94px;}
+    .pill small{display:block;color:var(--sub);font-size:10px;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px;font-weight:800;}
+    .pill strong{font-variant-numeric:tabular-nums;font-size:17px;}
+    .gamegrid{display:grid;grid-template-columns:minmax(260px,.82fr) minmax(0,1.18fr);gap:16px;}
+    .panel{border:1px solid var(--edge);background:linear-gradient(145deg,#18243aee,#111b2cec);border-radius:22px;box-shadow:0 18px 55px #0004;overflow:hidden;}
+    .panel .inner{padding:23px;}
+    .tag {color:var(--sub);font-size:11px;font-weight:850;letter-spacing:2px;text-transform:uppercase;}
+    .time {font-size:clamp(49px,9vw,88px);font-weight:850;letter-spacing:-4px;margin:14px 0 5px;font-variant-numeric:tabular-nums;line-height:1.05;text-shadow:0 0 35px #77ceff24;}
+    .time.danger {color:var(--danger);animation:pulse 0.65s infinite;}
+    .bar {height:10px;background:#07101c;border:1px solid #2b3b53;border-radius:30px;overflow:hidden;margin:17px 0 24px;}
+    .barfill {height:100%;background:linear-gradient(90deg,var(--good),#91f5df);width:100%;border-radius:30px;transition:width .22s linear;}
+    .barfill.danger {background:linear-gradient(90deg,#f55a67,#ffa06a);}
+    .terminal{background:#07111d;border:1px solid #263c55;border-radius:16px;padding:18px;margin:7px 0 17px;min-height:240px;}
+    .terminal .heading{display:flex;gap:9px;align-items:center;font-size:11px;color:var(--good);font-weight:850;letter-spacing:1.5px;}
+    .terminal .blink {width:7px;height:7px;border-radius:50%;background:var(--good);box-shadow:0 0 11px var(--good);}
+    .terminal p{line-height:1.6;color:#bfcee2;margin:18px 0 12px;font-size:14px;}
+    .rule{background:#10273a;border:1px solid #29516a;border-radius:10px;padding:13px;margin:9px 0;color:#e8f8ff;font-size:15px;font-weight:750;display:flex;align-items:center;justify-content:space-between;}
+    .rule em{font-style:normal;font-size:11px;color:#8ba9ba;text-transform:uppercase;letter-spacing:1px;}
+    .hint {min-height:39px;margin:12px 0 0;color:var(--gold);font-size:13px;line-height:1.4;}
+    button{font:inherit;cursor:pointer;touch-action:manipulation;}
+    .btn{border:1px solid #385069;background:#213349;color:#e9f5ff;border-radius:11px;padding:12px 16px;font-weight:800;transition:background .15s,transform .15s;}
+    .btn:hover{background:#2c4762;transform:translateY(-1px);}
+    .btn:focus-visible,.wire:focus-visible{outline:3px solid #ffce70;outline-offset:3px;}
+    .btn:disabled{opacity:.5;cursor:default;}
+    .secondary{background:transparent;border-color:#35516a;}
+    .small {font-size:12px; padding:10px 14px;}
+    .controls{display:flex;gap:9px;flex-wrap:wrap;}
+    .bomb-top {display:flex;align-items:center;justify-content:space-between;padding:21px 24px 14px;gap:12px;}
+    .serial{font:700 11px ui-monospace,SFMono-Regular,Consolas,monospace;color:#7b92ad;letter-spacing:1.4px;}
+    .screwbars{display:flex;gap:6px;}
+    .screw{width:9px;height:9px;border:1px solid #526781;border-radius:50%;background:linear-gradient(135deg,#43566d,#101b2a);}
+    .device{margin:0 20px 20px;background:linear-gradient(150deg,#111b2a,#0b1421);border:2px solid #39465a;border-radius:18px;padding:18px 18px 22px;position:relative;box-shadow:inset 0 0 35px #0008, 0 7px 0 #070e19;}
+    .device::after{content:"";position:absolute;inset:9px;pointer-events:none;border:1px dashed #30415a;border-radius:10px;}
+    .device-heading{margin:6px 5px 24px;display:flex;justify-content:space-between;gap:9px;align-items:center;color:#97aabe;font-size:11px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;}
+    .status-pill{border-radius:30px;padding:6px 10px;font-size:10px;background:#48212f;border:1px solid #814254;color:#ffc6cf;}
+    .status-pill.safe{background:#123d36;border-color:#2d8471;color:#a9ffe5;}
+    .wires{display:flex;flex-direction:column;gap:12px;position:relative;z-index:1;}
+    .wire{width:100%;text-align:left;border:1px solid #304259;border-radius:14px;background:#182235;padding:12px 12px 10px;min-height:76px;color:var(--text);transition:background .12s,border-color .12s,transform .12s;position:relative;overflow:hidden;}
+    .wire:hover:not(:disabled){background:#203149;border-color:#6686a5;transform:translateX(2px);}
+    .wire:disabled{cursor:default;opacity:.75;}
+    .wire-header{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px;}
+    .wire-name{font-size:12px;font-weight:800;color:#d7e5f6;}
+    .wire-info{font-size:12px;font-weight:800;color:#e7eeff;background:#0c1624;border-radius:8px;padding:5px 8px;white-space:nowrap;}
+    .cable-wrap {height:16px;position:relative;display:flex;align-items:center;gap:0;padding:0 3px;}
+    .connector{width:16px;height:19px;border:2px solid #8090a7;background:linear-gradient(#4b5c72,#243146);border-radius:4px;z-index:2;flex-shrink:0;}
+    .cable{display:block;flex:1;height:10px;background:linear-gradient(to bottom,var(--wire) 0%,var(--wire) 38%,#ffffff35 48%,var(--wire) 62%,var(--wire) 100%);border-radius:20px;box-shadow:0 0 12px var(--glow);position:relative;transition:all .3s;}
+    .cable::after{content:"";position:absolute;inset:0;border-bottom:2px solid #0006;border-radius:20px;}
+    .wire.cut .cable{background:linear-gradient(to right,var(--wire) 0 44%,transparent 45% 56%,var(--wire) 57% 100%);box-shadow:none;}
+    .wire.cut .cable::after{display:none;}
+    .wire.cut{border-color:var(--danger);background:#35202d;}
+    .wire.correct{border-color:var(--good);background:#133d36;}
+    .wire.correct .cable{background:linear-gradient(to right,var(--wire) 0 44%,transparent 45% 56%,var(--wire) 57% 100%);box-shadow:none;}
+    .help-line{font-size:12px;color:#9db0c7;padding:0px 24px 20px;line-height:1.5;}
+    .foot {margin-top:16px;text-align:center;color:#778ba3;font-size:12px;line-height:1.7;}
+    .overlay {position:fixed;inset:0;z-index:20;background:#060d17d9;display:grid;place-items:center;padding:20px;backdrop-filter:blur(7px);}
+    .overlay[hidden]{display:none;}
+    .dialog {width:min(480px,100%);padding:32px 26px;border:1px solid #496077;border-radius:24px;background:linear-gradient(155deg,#1c2b40,#0f1928);box-shadow:0 35px 100px #000a;text-align:center;animation:pop .25s ease-out;}
+    .dialog-emoji{font-size:55px;line-height:1.2;display:block;}
+    .dialog h2{font-size:31px;margin:14px 0 10px;letter-spacing:-.7px;}
+    .dialog p{line-height:1.6;color:#bccce0;margin:0 0 22px;}
+    .main-btn {width:100%;background:var(--good);color:#08231d;border:0;border-radius:13px;padding:15px;font-weight:900;font-size:16px;}
+    .main-btn:hover{filter:brightness(1.07);}
+    .dialog small{color:#90a7c1;display:block;margin:16px auto 0;line-height:1.5;}
+    .flash{position:fixed;inset:0;background:#ff6637;pointer-events:none;z-index:30;animation:flash .65s ease-out forwards;}
+    .shake{animation:shake .5s linear;}
+    @keyframes pulse{50%{opacity:.5}}
+    @keyframes pop{from{transform:translateY(15px) scale(.96);opacity:.3}to{transform:none;opacity:1}}
+    @keyframes flash{0%{opacity:.9}100%{opacity:0}}
+    @keyframes shake{0%,100%{transform:translate(0)}20%{transform:translate(-10px,5px)}40%{transform:translate(9px,-7px)}60%{transform:translate(-7px,-3px)}80%{transform:translate(5px,4px)}}
+    @media(max-width:740px){.shell{width:min(550px,calc(100% - 20px));padding-top:18px}.top{align-items:flex-start;flex-direction:column;margin-bottom:14px}.top-right{width:100%;justify-content:stretch}.pill{flex:1}.gamegrid{grid-template-columns:1fr;gap:13px}.panel .inner{padding:19px}.time{font-size:59px}.terminal{min-height:0;padding:15px}.terminal p{margin:12px 0 8px}.device{margin:0 12px 16px;padding:14px}.bomb-top{padding:18px 17px 13px}.wire{min-height:70px}.wire-header{margin-bottom:9px}.help-line{padding:2px 16px 17px}.bar{margin:13px 0 18px}}
+    @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+  </style>
+</head>
+<body>
+<div class="shell" id="game-shell">
+  <header class="top">
+    <div>
+      <div class="brandline"><span class="led"></span> SİNYAL TESPİT EDİLDİ · OYUN</div>
+      <h1>KABLO <span>OPERASYONU</span></h1>
+    </div>
+    <div class="top-right">
+      <div class="pill"><small>Bölüm</small><strong id="level">1 / 5</strong></div>
+      <div class="pill"><small>Puan</small><strong id="score">0</strong></div>
+      <div class="pill"><small>Rekor</small><strong id="best">0</strong></div>
+    </div>
+  </header>
+  <main class="gamegrid">
+    <section class="panel" aria-label="Görev bilgileri">
+      <div class="inner">
+        <div class="tag">Geri sayım</div>
+        <div class="time" id="timer" role="timer" aria-live="off">00:50</div>
+        <div class="tag" id="timer-note">Süre dolmadan kabloyu seç.</div>
+        <div class="bar" aria-hidden="true"><div class="barfill" id="bar"></div></div>
+        <div class="terminal">
+          <div class="heading"><span class="blink"></span> GÖREV KARTI</div>
+          <p>Güvenli kablo <strong>iki koşulu da</strong> sağlar. İşaretleri karşılaştır, sonra tek bir kabloyu kes.</p>
+          <div class="rule"><em>Sembol</em><span id="target-symbol">★</span></div>
+          <div class="rule"><em>Çizgi sayısı</em><span id="target-bands">2 çizgi</span></div>
+          <div class="hint" id="hint" aria-live="polite"></div>
+        </div>
+        <div class="controls">
+          <button class="btn small" id="hint-btn" type="button">💡 Ek ipucu (−50 puan)</button>
+          <button class="btn small secondary" id="sound-btn" type="button" aria-pressed="false">🔇 Ses kapalı</button>
+        </div>
+      </div>
+    </section>
+    <section class="panel" aria-label="Kablo paneli">
+      <div class="bomb-top"><div class="tag">Kablo kontrol ünitesi</div><div class="screwbars" aria-hidden="true"><div class="screw"></div><div class="screw"></div><div class="screw"></div></div></div>
+      <div class="device" id="device">
+        <div class="device-heading"><span id="unit-label">ÜNİTE #001</span><span class="status-pill" id="device-status">● AKTİF</span></div>
+        <div class="wires" id="wires" aria-label="Kesilebilecek kablolar"></div>
+      </div>
+      <div class="help-line">✂️ Kesmek için kabloya dokun veya tıkla. Bilgisayarda <b>1–6</b> tuşları da kullanılabilir.</div>
+    </section>
+  </main>
+  <footer class="foot">5 bölüm · Her tur rastgele düzen · Hatalı kablo veya süre bitimi = oyun sonu<br>Bu tamamen kurgusal bir mantık oyunudur.</footer>
+</div>
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
+  <div class="dialog">
+    <span class="dialog-emoji" id="dialog-icon" aria-hidden="true">✂️</span>
+    <h2 id="dialog-title">Hazır mısın?</h2>
+    <p id="dialog-text">Görev kartındaki iki ipucunu kullanarak doğru kabloyu bul. Yanlış seçimde bomba patlar. Beş bölümü tamamla!</p>
+    <button class="main-btn" id="start-btn" type="button">OYUNA BAŞLA</button>
+    <small id="dialog-foot">Telefonda veya bilgisayarda oynanabilir.</small>
+  </div>
+</div>
+<script>
+(() => {
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+  const TOTAL = 5;
+  const DURATIONS = [50,45,40,35,30];
+  const COUNTS = [4,4,5,5,6];
+  const SYMBOLS = ['★','◆','▲','●'];
+  const COLORS = [
+    {name:'Kırmızı',value:'#fc6472'}, {name:'Mavi',value:'#4ba7ff'},
+    {name:'Sarı',value:'#f9cf59'}, {name:'Yeşil',value:'#5de4a1'},
+    {name:'Mor',value:'#b38bff'}, {name:'Turuncu',value:'#ff9f5c'}
+  ];
+  const shuffle = (arr) => {
+    const copy = [...arr];
+    for(let i=copy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]];}
+    return copy;
+  };
+  let level=0,score=0,wires=[],correctIndex=-1,running=false,seconds=50,deadline=0,ticker=null,hintUsed=false,muted=true,context=null,waitingNext=null;
+  const getBest = () => {try{return Number(localStorage.getItem('kablo-operasyonu-best'))||0;}catch{return 0;}};
+  const setBest = (v) => {try{localStorage.setItem('kablo-operasyonu-best',String(v));}catch{}};
+  $('best').textContent=getBest().toLocaleString('tr-TR');
+  function beep(freq=500,duration=.12,type='sine',volume=.055){
+    if(muted) return;
+    try {
+      context=context||new (window.AudioContext||window.webkitAudioContext)();
+      const osc=context.createOscillator(),gain=context.createGain();
+      osc.type=type;osc.frequency.setValueAtTime(freq,context.currentTime);
+      gain.gain.setValueAtTime(volume,context.currentTime);
+      gain.gain.exponentialRampToValueAtTime(.0001,context.currentTime+duration);
+      osc.connect(gain).connect(context.destination);osc.start();osc.stop(context.currentTime+duration);
+    }catch{ /* Sound is optional. */ }
+  }
+  function sound(kind){
+    if(kind==='win'){beep(520,.17);setTimeout(()=>beep(780,.2),140);}
+    if(kind==='lose'){beep(160,.5,'sawtooth',.085);setTimeout(()=>beep(65,.65,'sawtooth',.07),120);}
+    if(kind==='cut'){beep(350,.09,'triangle');}
+  }
+  function generate(){
+    const symbols=shuffle(SYMBOLS), targetSymbol=symbols[0], targetBands=1+Math.floor(Math.random()*3);
+    const combos=[{symbol:targetSymbol,bands:targetBands,correct:true}];
+    combos.push({symbol:targetSymbol,bands:targetBands===3?2:targetBands+1,correct:false});
+    combos.push({symbol:symbols[1],bands:targetBands,correct:false});
+    const all=[];
+    for(const s of SYMBOLS){for(let b=1;b<=3;b++){
+      if(!combos.some(x=>x.symbol===s&&x.bands===b)) all.push({symbol:s,bands:b,correct:false});
+    }}
+    combos.push(...shuffle(all).slice(0,COUNTS[level]-combos.length));
+    const colors=shuffle(COLORS);
+    wires=shuffle(combos.map((c,i)=>({...c,color:colors[i]})));
+    correctIndex=wires.findIndex(w=>w.correct);
+    $('target-symbol').textContent=targetSymbol;
+    $('target-bands').textContent=`${targetBands} çizgi`;
+  }
+  function draw(){
+    $('wires').replaceChildren();
+    wires.forEach((wire,i)=>{
+      const b=document.createElement('button');b.type='button';b.className='wire';
+      b.style.setProperty('--wire',wire.color.value);b.style.setProperty('--glow',wire.color.value+'66');
+      b.setAttribute('aria-label',`${i+1}. kablo, ${wire.color.name}, ${wire.symbol} sembolü, ${wire.bands} çizgi, kesmek için dokun`);
+      const title=document.createElement('div');title.className='wire-header';
+      const name=document.createElement('span');name.className='wire-name';name.textContent=`0${i+1}  /  ${wire.color.name}`;
+      const info=document.createElement('span');info.className='wire-info';info.textContent=`${wire.symbol}  ·  ${'Ⅰ'.repeat(wire.bands)}`;
+      title.append(name,info);
+      const wireBody=document.createElement('div');wireBody.className='cable-wrap';wireBody.setAttribute('aria-hidden','true');
+      const left=document.createElement('span');left.className='connector';
+      const cable=document.createElement('span');cable.className='cable';
+      const right=document.createElement('span');right.className='connector';
+      wireBody.append(left,cable,right);b.append(title,wireBody);
+      b.addEventListener('click',()=>cut(i));$('wires').append(b);
+    });
+  }
+  function updateClock(){
+    const t=Math.max(0,Math.ceil((deadline-Date.now())/1000));seconds=t;
+    $('timer').textContent=`00:${String(t).padStart(2,'0')}`;
+    $('timer').classList.toggle('danger',t<=10);
+    const bar=$('bar');bar.style.width=(t/DURATIONS[level]*100)+'%';bar.classList.toggle('danger',t<=10);
+    $('timer-note').textContent=t<=10?'⚠️ SON SANİYELER!':'Süre dolmadan kabloyu seç.';
+    if(t<=0&&running) lose('Süre doldu! Sistem devreye girdi.');
+  }
+  function nextRound(){
+    if(level>=TOTAL){complete();return;}
+    clearInterval(ticker);clearTimeout(waitingNext);
+    running=true;hintUsed=false;seconds=DURATIONS[level];deadline=Date.now()+seconds*1000;
+    $('level').textContent=`${level+1} / ${TOTAL}`;
+    $('score').textContent=score.toLocaleString('tr-TR');
+    $('hint').textContent='';$('hint-btn').disabled=false;
+    $('unit-label').textContent=`ÜNİTE #00${level+1}`;
+    $('device-status').textContent='● AKTİF';$('device-status').classList.remove('safe');
+    generate();draw();updateClock();ticker=setInterval(updateClock,100);
+  }
+  function begin(){
+    level=0;score=0;$('score').textContent='0';
+    $('overlay').hidden=true;nextRound();
+  }
+  function cut(index){
+    if(!running||index<0||index>=wires.length) return;
+    running=false;clearInterval(ticker);sound('cut');
+    const b=$('wires').children[index];b.classList.add('cut');
+    [...$('wires').children].forEach(el=>el.disabled=true);
+    if(index!==correctIndex){
+      setTimeout(()=>lose('Yanlış kabloyu kestin. Bomba patladı!'),260);
+      return;
+    }
+    b.classList.add('correct');$('device-status').textContent='● ETKİSİZ';$('device-status').classList.add('safe');
+    score+=100+seconds*10;score=Math.max(0,score);$('score').textContent=score.toLocaleString('tr-TR');
+    sound('win');level++;
+    $('timer-note').textContent='✓ Doğru kablo!';
+    waitingNext=setTimeout(()=>{if(level>=TOTAL) complete();else nextRound();},1050);
+  }
+  function showDialog(icon,title,description,buttonText,foot){
+    $('dialog-icon').textContent=icon;$('dialog-title').textContent=title;
+    $('dialog-text').textContent=description;$('start-btn').textContent=buttonText;
+    $('dialog-foot').textContent=foot||'';$('overlay').hidden=false;
+    $('start-btn').focus();
+  }
+  function lose(reason){
+    clearInterval(ticker);clearTimeout(waitingNext);running=false;
+    [...$('wires').children].forEach(el=>el.disabled=true);
+    sound('lose');
+    const flash=document.createElement('div');flash.className='flash';document.body.append(flash);setTimeout(()=>flash.remove(),650);
+    $('game-shell').classList.add('shake');setTimeout(()=>$('game-shell').classList.remove('shake'),520);
+    showDialog('💥','BOMBA PATLADI!',`${reason} ${level+1}. bölümde kaldın. Toplam puanın: ${score.toLocaleString('tr-TR')}.`,'TEKRAR DENE','Her yeni oyunda kablolar ve ipuçları değişir.');
+  }
+  function complete(){
+    running=false;clearInterval(ticker);clearTimeout(waitingNext);
+    const previous=getBest(),record=score>previous;
+    if(record){setBest(score);$('best').textContent=score.toLocaleString('tr-TR');}
+    showDialog('🏆','GÖREV TAMAMLANDI!',`Beş kablonun hepsini doğru kestin! Toplam puan: ${score.toLocaleString('tr-TR')}.${record?' Yeni rekor!':''}`,'YENİDEN OYNA','Mükemmel! Daha yüksek puan için daha hızlı karar ver.');
+  }
+  $('start-btn').addEventListener('click',begin);
+  $('hint-btn').addEventListener('click',()=>{
+    if(!running||hintUsed) return;
+    hintUsed=true;score=Math.max(0,score-50);$('score').textContent=score.toLocaleString('tr-TR');
+    $('hint').textContent=`Ek ipucu: Doğru kablonun rengi ${wires[correctIndex].color.name.toLocaleLowerCase('tr-TR')}.`;
+    $('hint-btn').disabled=true;beep(720,.1);
+  });
+  $('sound-btn').addEventListener('click',()=>{
+    muted=!muted;$('sound-btn').textContent=muted?'🔇 Ses kapalı':'🔊 Ses açık';
+    $('sound-btn').setAttribute('aria-pressed',String(!muted));beep(660,.12);
+  });
+  document.addEventListener('keydown',(event)=>{
+    if(!running)return;
+    if(event.altKey||event.ctrlKey||event.metaKey||event.repeat)return;
+    if(/^[1-6]$/.test(event.key))cut(Number(event.key)-1);
+  });
+  // Populate the initial board without starting the timer.
+  generate();draw();$('bar').style.width='100%';
+})();
+</script>
+</body>
+</html>
